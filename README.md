@@ -31,6 +31,8 @@ The objective is to determine the creditworthiness of an individual based on a g
 ## Concept Used
 - **Exploratory Data Analysis (EDA)**
 - **Feature Engineering**
+- **Guassian Mixture Models**
+- **Oversampling and Undersampling using SMOTE**
 - **Logistic Regression**
 - **Precision vs Recall Tradeoff**
 
