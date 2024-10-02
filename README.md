@@ -28,12 +28,11 @@ The objective is to determine the creditworthiness of an individual based on a g
 - `open_acc`: Number of open credit lines in the borrower's credit file.
 - `pub_rec`, `revol_bal`, `revol_util`, `total_acc`, `initial_list_status`, `application_type`, `mort_acc`, `pub_rec_bankruptcies`, `Address`: Various other financial and personal details.
 
-## Concept Used
-- **Exploratory Data Analysis (EDA)**
-- **Feature Engineering**
-- **Guassian Mixture Models**
+## Steps
+- **Exploratory Data Analysis (EDA)**: Statistical Analysis, Univariate, Bivariate Analysis, Data Wrangling, Imputing missing values using KNN imputer, encoding categoring to numeric data,
+- **Feature Engineering**: Normalization, transforming skewed data using box-cox transformation, treating outliers using Guassian Mixture Models, evaluating the clusters with AIC/BIC scores, dropping duplicates, checking for multicollinearity using VIF scores and dropping unnecessary columns.
 - **Oversampling and Undersampling using SMOTE**
-- **Logistic Regression**
+- **Fitting Logistic Regression model**
 - **Precision vs Recall Tradeoff**
 
 ## Key Insights & Business Recommendations
@@ -45,14 +44,25 @@ The objective is to determine the creditworthiness of an individual based on a g
 - **ROC AUC Curve**: Helps in understanding the model's capability to distinguish between classes.
 - **Precision Recall Curve**: Provides insights into the trade-off between precision and recall, important for making lending decisions.
 - **Classification Report**: Summarizes the model accuracy, precision, recall, and F1 score.
-
+- Base model: F1 score: 90%, Specificity: 40%, Recall: 94%
+- Optimum Threshold model: F1 score: 90%, Specificity: 50%, Recall: 93% 
+- Weight Balanced model: F1 score: 86%, Specificity: 76%, Recall: 80%, precision: 93%
+  
 ## Tradeoff Questions and Answers
 - **Detecting Real Defaulters**: Emphasis on precision to minimize false positives, enhancing profitability by reducing the chance of lending to non-repaying individuals.
 - **Minimizing Non-Performing Assets (NPAs)**: Focus on conservative lending strategies to ensure loans are disbursed to applicants most likely to repay.
 
 ## Actionable Insights
-- **Adjusting Interest Rates**: Setting interest rates based on the predicted probability of repayment to manage risk effectively.
-- **Focusing on Significant Predictors**: Prioritizing lending decisions based on employment verification, DTI, and mortgage-related attributes.
+1. The percentage of people paying back the amount is 80% and those who didn't pay back is 20%. Which is a pretty big number. The bank should reduce the money given to unpaid people.
+2. People whose home ownership is NONE or RENT have low chances of paying back. Whereas those having Mortage or OTHER have relatively better chances of paying back. So the Bank should focus on such customers.
+3. We see that there is a high correlation between the grade and payback. The Bank can prioritize on this parameter to decide whether to give or not.
+4. Also once we determine the probabilty of a person paying back. Bank can then set the interest rate before disbursing the loan. Because higher interest rate is highly correlated with payback percentage. Low interest rate -> good candidate, high interest rate -> risky candidate.
+5. The Parameters that dont have a significant impact to determine credit worthiness are - Grade (since subgrade already provides the info), address, Purpose/title (it is text data and not very useful for logistic regression model), rent_one_hot (because it can be determined by those who dont have mortage or own home), application_type,term (because it is got from loan amount and duration).
+6. After training the logistic regression model, the coefficient we get determines how important a parameter is. The Bank has to focus more on the parameters - Employee title, verification status, dti and mortage_one_hot. The parameters that are not so important are - initial_list_status, earliest_cr_line_date, public record, total accounts and revol_balance.
+7. If bank focuses on precision they would not give to people who won't return back the money, this will reduce NPA. Low false positive rate will give us higher precision and more profit to bank. To achieve this we can use SMOTE with weight balancing model. This approach is effective when the bank wants to play safe.¶
+8. If bank wants to maintain customer relation/satisfaction they could give loan to more risky customer, this way they will be less likely to reject a good customer. To achieve this, bank needs to focus on recall and reduce false negative rate. Model best suited for this is the one without oversampling and weight balancing.
+9. If the Bank wants a best overall model with high precision and recall then I would suggest to use model2 with weight balancing and without oversampling. Using this we could be 80% sure that we are correctly classifying positive as positive and negative as negative. This model has good recall as well as specificity.
+10. Threshold can be adjusted to increase precision and decrease recall or vice versa. The ideal threshold to maximise both precision and recall and thus maximise f1 score is 0.57 for model 1 (without oversampling/weight balancing) and 0.27 for model 2 (with oversampling/weight balancing).
 
 ## Conclusion
 This project provides LoanTap with a robust analytical framework to enhance their personal loan underwriting processes, thereby optimizing their risk management and customer satisfaction strategies.
